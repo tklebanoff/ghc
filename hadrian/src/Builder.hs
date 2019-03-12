@@ -110,6 +110,7 @@ data Builder = Alex
              | Autoreconf FilePath
              | DeriveConstants
              | Cabal ConfigurationInfo Stage
+             | SysCabal FilePath
              | Cc CcMode Stage
              | Configure FilePath
              | GenApply
@@ -290,6 +291,7 @@ systemBuilderPath builder = case builder of
     Cc  _  _        -> fromKey "cc"
     -- We can't ask configure for the path to configure!
     Configure _     -> return "configure"
+    SysCabal _   -> fromKey "system-cabal"
     Ghc _  Stage0   -> fromKey "system-ghc"
     GhcPkg _ Stage0 -> fromKey "system-ghc-pkg"
     Happy           -> fromKey "happy"

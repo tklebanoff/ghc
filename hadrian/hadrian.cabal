@@ -87,6 +87,7 @@ executable hadrian
                        , Settings.Builders.Ld
                        , Settings.Builders.Make
                        , Settings.Builders.RunTest
+                       , Settings.Builders.SysCabal
                        , Settings.Builders.Xelatex
                        , Settings.Default
                        , Settings.Flavours.Common
@@ -128,7 +129,7 @@ executable hadrian
                        , unordered-containers >= 0.2.1   && < 0.3
     build-tools:         alex  >= 3.1
                        , happy >= 1.19.4
-    ghc-options:       -Wall
+    ghc-options:       -Werror
                        -Wincomplete-record-updates
                        -Wredundant-constraints
                        -fno-warn-name-shadowing
