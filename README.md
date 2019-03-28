@@ -1,6 +1,6 @@
 The Glasgow Haskell Compiler
 ============================
-
+Test
 [![Build Status](https://api.travis-ci.org/ghc/ghc.svg?branch=master)](http://travis-ci.org/ghc/ghc)
 
 This is the source tree for [GHC][1], a compiler and interactive
