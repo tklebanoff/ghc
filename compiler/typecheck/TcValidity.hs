@@ -342,6 +342,7 @@ checkValidType ctxt ty
 
                  ExprSigCtxt    -> rank1
                  KindSigCtxt    -> rank1
+                 TopKindSigCtxt{} -> ArbitraryRank -- TODO (int-index): is this right?
                  TypeAppCtxt | impred_flag -> ArbitraryRank
                              | otherwise   -> tyConArgMonoType
                     -- Normally, ImpredicativeTypes is handled in check_arg_type,
@@ -481,6 +482,7 @@ allConstraintsAllowed _ = True
 vdqAllowed :: UserTypeCtxt -> Bool
 -- Currently allowed in the kinds of types...
 vdqAllowed (KindSigCtxt {}) = True
+vdqAllowed (TopKindSigCtxt {}) = True
 vdqAllowed (TySynCtxt {}) = True
 vdqAllowed (ThBrackCtxt {}) = True
 vdqAllowed (GhciCtxt {}) = True
@@ -1328,6 +1330,7 @@ okIPCtxt (TySynCtxt {})         = True   -- e.g.   type Blah = ?x::Int
                                          -- #11466
 
 okIPCtxt (KindSigCtxt {})       = False
+okIPCtxt (TopKindSigCtxt {})    = False
 okIPCtxt (ClassSCCtxt {})       = False
 okIPCtxt (InstDeclCtxt {})      = False
 okIPCtxt (SpecInstCtxt {})      = False

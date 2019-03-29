@@ -1116,8 +1116,9 @@ instance ( a ~ GhcPass p
       XCmd _ -> []
 
 instance ToHie (TyClGroup GhcRn) where
-  toHie (TyClGroup _ classes roles instances) = concatM
+  toHie (TyClGroup _ classes roles _sigs instances) = concatM
     [ toHie classes
+    -- , toHie sigs -- TODO (int-index): instance ToHie TopKindSig
     , toHie roles
     , toHie instances
     ]

@@ -1,0 +1,3 @@
+PartialTopLevelKindSignature.hs:5:11:
+    Wildcard ‘_w’ not allowed
+      in the top-level kind signature for T

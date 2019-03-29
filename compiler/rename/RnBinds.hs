@@ -20,7 +20,7 @@ module RnBinds (
    rnLocalBindsAndThen, rnLocalValBindsLHS, rnLocalValBindsRHS,
 
    -- Other bindings
-   rnMethodBinds, renameSigs,
+   rnMethodBinds, renameSigs, renameTLKS,
    rnMatchGroup, rnGRHSs, rnGRHS, rnSrcFixityDecl,
    makeMiniFixityEnv, MiniFixityEnv,
    HsSigCtxt(..)
@@ -62,6 +62,7 @@ import Control.Monad
 import Data.Foldable      ( toList )
 import Data.List          ( partition, sort )
 import Data.List.NonEmpty ( NonEmpty(..) )
+import Data.Void
 
 {-
 -- ToDo: Put the annotations into the monad, so that they arrive in the proper
@@ -1043,7 +1044,17 @@ renameSig _ctxt sig@(CompleteMatchSig _ s (L l bf) mty)
       text "A COMPLETE pragma must mention at least one data constructor" $$
       text "or pattern synonym defined in the same module."
 
+renameSig _ TLKS{} = panic "renameSig: TLKS"
 renameSig _ (XSig _) = panic "renameSig"
+
+renameTLKS :: NameSet -> TopKindSig GhcPs -> RnM (TopKindSig GhcRn, FreeVars)
+renameTLKS tc_names sig@(TopKindSig _ v ki)
+  = do  { new_v <- lookupSigOccRn (TopSigCtxt tc_names) (TLKS noExt sig) v
+        ; let doc = TopKindSigCtx (ppr v)
+        ; (new_ki, fvs) <- rnHsSigWcType BindUnlessForall doc ki
+        ; return (TopKindSig noExt new_v new_ki, fvs)
+        }
+renameTLKS _ (XTopKindSig x) = absurd x
 
 {-
 Note [Orphan COMPLETE pragmas]
@@ -1111,6 +1122,7 @@ okHsSig ctxt (L _ sig)
      (CompleteMatchSig {}, TopSigCtxt {} ) -> True
      (CompleteMatchSig {}, _)              -> False
 
+     (TLKS{}, _) -> panic "okHsSig: TLKS"
      (XSig _, _) -> panic "okHsSig"
 
 -------------------
